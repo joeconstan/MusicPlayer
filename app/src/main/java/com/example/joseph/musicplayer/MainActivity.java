@@ -3,9 +3,14 @@ package com.example.joseph.musicplayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,18 +19,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = (Button)findViewById(R.id.Button);
-        final TextView textView = (TextView)findViewById(R.id.TextView);
-        final EditText editText = (EditText)findViewById(R.id.EditText);
+        String items[] = {"song1", "song2", "song3", "song4","song5", "song6","song7", "song8", "song9", "song10"};
+        ListView listView = (ListView) findViewById(R.id.listView);
+        ListAdapter listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
+        listView.setAdapter(listAdapter);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = editText.getText().toString();
-                textView.setText(text);
 
-            }
-        });
+
+
 
     }
 }
+
+
+
+
