@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
 
         if (cursor.moveToFirst()){
-            textView.setText(cursor.getString(1));
+            textView.setText(cursor.getColumnName(2));
 
         }
 
