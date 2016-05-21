@@ -59,7 +59,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
 
         if (cursor.moveToFirst()){
-            songs.add(cursor.getString(1));
+            do {
+                songs.add(cursor.getString(1));
+            }while(cursor.moveToNext());
         }
 
 
