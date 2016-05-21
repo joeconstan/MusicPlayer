@@ -10,17 +10,10 @@
     tools:context="com.example.joseph.musicplayer.MainActivity">
 
 
-
-
-    <TextView
+    <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="one"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textSize="50sp"
-        android:id="@+id/text1"
-        />
-
-
+        android:id="@+id/listView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

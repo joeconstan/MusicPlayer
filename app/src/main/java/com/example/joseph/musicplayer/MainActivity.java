@@ -16,10 +16,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import java.util.ArrayList;
-
-
+import java.util.Vector;
 
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
@@ -43,16 +45,21 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 }
             }
 
-        TextView textView = (TextView) findViewById(R.id.text1);
 
 
         ContentResolver resolver = getContentResolver();
         String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE};
         Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
 
-        if (cursor.moveToFirst()){
-            textView.setText(cursor.getColumnName(2));
 
+        Vector<String> songs = new Vector<>(0);
+        ListAdapter listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songs);
+        ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(listAdapter);
+
+
+        if (cursor.moveToFirst()){
+            songs.add(cursor.getString(1));
         }
 
 
