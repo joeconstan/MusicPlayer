@@ -9,18 +9,26 @@ import android.media.MediaPlayer;
 import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
+import android.os.Parcel;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.os.EnvironmentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 
@@ -49,24 +57,42 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         ContentResolver resolver = getContentResolver();
         String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE};
-        Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
+        final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
 
 
         Vector<String> songs = new Vector<>(0);
-        ListAdapter listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songs);
-        ListView listView = (ListView) findViewById(R.id.listView);
+        ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
+        final ListView listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(listAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int data =cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+                String dataStr = cursor.getString(data);
+                Log.v(TAG, "position: " + position);
+                String itemAtPos = listView.getItemAtPosition(position).toString();
+                Log.v(TAG, itemAtPos);
+                Uri uri = Uri.parse("file:///" + dataStr);
+                MediaPlayer mediaPlayer= MediaPlayer.create(MainActivity.this, uri);
+                mediaPlayer.start();
 
 
-        if (cursor.moveToFirst()){
+
+
+            }
+        });
+
+
+        if (cursor.moveToFirst()){ //needs to check for first element to avoid nullptr exception
             do {
                 songs.add(cursor.getString(1));
             }while(cursor.moveToNext());
         }
 
 
-
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
