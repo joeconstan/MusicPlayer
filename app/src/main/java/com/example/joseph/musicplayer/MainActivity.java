@@ -77,13 +77,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 cursor.moveToFirst();
                 //cursor.moveToPosition(position);
-                int data =cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-                String dataStr = cursor.getString(data);
+                //int data =cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+                //String dataStr = cursor.getString(data);
                 //Uri uri = Uri.parse("file:///" + dataStr);
+                Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 //Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, position);
                 try {
                     MediaPlayer mediaPlayer = new MediaPlayer();
-                    mediaPlayer.setDataSource(MainActivity.this, Uri.fromFile(new File(dataStr)));
+                    //mediaPlayer.setDataSource(MainActivity.this, Uri.fromFile(new File(dataStr)));
+                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    mediaPlayer.setDataSource(MainActivity.this, uri);
+                    mediaPlayer.prepareAsync();
                     mediaPlayer.start();
                 }catch(Exception e){
                     e.printStackTrace();
