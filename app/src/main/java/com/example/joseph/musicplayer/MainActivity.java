@@ -2,6 +2,7 @@ package com.example.joseph.musicplayer;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioManager;
@@ -26,6 +27,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,36 +60,38 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         ContentResolver resolver = getContentResolver();
         String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE};
         final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-
-
         Vector<String> songs = new Vector<>(0);
+
+        if (cursor.moveToFirst()) { //needs to check for first element to avoid nullptr exception
+            do {
+                songs.add(cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+
+
         ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
         final ListView listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                cursor.moveToFirst();
+                //cursor.moveToPosition(position);
                 int data =cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
                 String dataStr = cursor.getString(data);
-                Log.v(TAG, "position: " + position);
-                String itemAtPos = listView.getItemAtPosition(position).toString();
-                Log.v(TAG, itemAtPos);
-                Uri uri = Uri.parse("file:///" + dataStr);
-                MediaPlayer mediaPlayer= MediaPlayer.create(MainActivity.this, uri);
-                mediaPlayer.start();
-
-
-
+                //Uri uri = Uri.parse("file:///" + dataStr);
+                //Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, position);
+                try {
+                    MediaPlayer mediaPlayer = new MediaPlayer();
+                    mediaPlayer.setDataSource(MainActivity.this, Uri.fromFile(new File(dataStr)));
+                    mediaPlayer.start();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
 
             }
         });
 
-
-        if (cursor.moveToFirst()){ //needs to check for first element to avoid nullptr exception
-            do {
-                songs.add(cursor.getString(1));
-            }while(cursor.moveToNext());
-        }
 
 
     }
