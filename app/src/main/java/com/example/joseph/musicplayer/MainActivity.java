@@ -1,6 +1,7 @@
 package com.example.joseph.musicplayer;
 
 import android.Manifest;
+import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.pm.PackageManager;
@@ -36,6 +37,7 @@ import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
 
+
     public static final String TAG = MainActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,45 +60,60 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
 
         ContentResolver resolver = getContentResolver();
-        String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE};
-        final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-        Vector<String> songs = new Vector<>(0);
-
-        if (cursor.moveToFirst()) { //needs to check for first element to avoid nullptr exception
+        String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE, MediaStore.Audio.Media.DATA};
+        Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, MediaStore.Audio.Media.DATA, null, null);
+        cursor.moveToFirst();
+        int colIndex = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+        String path = cursor.getString(colIndex); //this
+        //Vector<String> songs = new Vector<>(0);
+        Uri uri = Uri.parse(path);
+        /*if (cursor.moveToFirst()) { //needs to check for first element to avoid nullptr exception
             do {
                 songs.add(cursor.getString(1));
             } while (cursor.moveToNext());
+        } */
+        //boolean f = cursor.moveToFirst();
+        //String x = String.valueOf(f);
+        //songs.add(0, x);
+
+        //----------------------------------
+        try {
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.setDataSource(MainActivity.this, uri);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        }catch(Exception e){
+            e.printStackTrace();
         }
+        cursor.close();
 
+        //----------------------------------
 
-        ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
+       /* ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
         final ListView listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 cursor.moveToFirst();
-                //cursor.moveToPosition(position);
-                //int data =cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-                //String dataStr = cursor.getString(data);
-                //Uri uri = Uri.parse("file:///" + dataStr);
-                Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                //Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, position);
+                //Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+
                 try {
                     MediaPlayer mediaPlayer = new MediaPlayer();
-                    //mediaPlayer.setDataSource(MainActivity.this, Uri.fromFile(new File(dataStr)));
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                    mediaPlayer.setDataSource(MainActivity.this, uri);
-                    mediaPlayer.prepareAsync();
+                    mediaPlayer.setDataSource(MainActivity.this, uri); //here
+                    mediaPlayer.prepare();
                     mediaPlayer.start();
                 }catch(Exception e){
                     e.printStackTrace();
                 }
-
+                cursor.close();
             }
         });
 
 
+*/
 
     }
 
