@@ -54,13 +54,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 else {
                     Log.v(TAG, "Permission not granted");
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 1);
                 }
             }
 
 
 
-        ContentResolver resolver = getContentResolver();
+        final ContentResolver resolver = getContentResolver();
         String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE, MediaStore.Audio.Media.DATA};
         //final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, MediaStore.Audio.Media.DATA, null, null);
         final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
@@ -73,16 +72,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         cursor.moveToFirst();
+        cursor.moveToNext();
+        cursor.moveToNext();
         ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
         final ListView listView = (ListView) findViewById(R.id.listView);
+        long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+        final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+        cursor.close();
         listView.setAdapter(listAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() { //-----------------------
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //cursor.moveToFirst();
-                //Uri uri = (MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
-                long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-                Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
                 Log.v(TAG, "URI PATH: " + mySongUri.getPath());
                 try {
                     final MediaPlayer mediaPlayer = new MediaPlayer();
@@ -96,11 +96,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         }
                     });
 
-                }catch(Exception e){
+                }catch(Exception e) {
                     e.printStackTrace();
                 }
-                cursor.close();
+
             }
+
         });
     }
 
