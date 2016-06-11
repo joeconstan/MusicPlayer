@@ -24,6 +24,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -114,8 +116,34 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 }catch(Exception e) {e.printStackTrace();}
             }
         });
-    }
+        ImageButton button = (ImageButton) findViewById(R.id.playButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                {
+                    try {
+                        final MediaPlayer mediaPlayer = new MediaPlayer();
+                        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+                        mediaPlayer.prepareAsync();
+                        if (mediaPlayer.isPlaying()) {
+                            mediaPlayer.stop();
+                        } else {
+                            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                @Override
+                                public void onPrepared(MediaPlayer mp) {
+                                    mediaPlayer.start();
+                                }
+                            });
 
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
 
 
     @Override

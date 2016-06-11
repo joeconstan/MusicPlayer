@@ -25,6 +25,7 @@
         android:layout_height="75sp"
         android:textSize="12sp"
         android:text="play"
+        android:id="@+id/playButton"
         android:layout_below="@+id/listView"
         android:layout_centerHorizontal="true"/>
 
