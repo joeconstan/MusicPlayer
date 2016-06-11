@@ -38,6 +38,20 @@ import java.util.Vector;
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
 
 
+    public boolean queueSongs(Cursor cursor, Song songs[]){
+        if (cursor.moveToFirst()) { //needs to check for first element to avoid nullptr exception
+            for (int j=0;j<21;j++){
+                songs[j].setTitle(cursor.getString(1));
+                songs[j].setTrack(cursor.getString(2));
+                cursor.moveToNext();
+            }
+        }
+
+
+      return true;
+    }
+
+
     public static final String TAG = MainActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,25 +71,20 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 }
             }
 
-
-
         final ContentResolver resolver = getContentResolver();
         String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE, MediaStore.Audio.Media.DATA};
-        //final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, MediaStore.Audio.Media.DATA, null, null);
         final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-        Vector<String> songs = new Vector<>(0);
-
-        if (cursor.moveToFirst()) { //needs to check for first element to avoid nullptr exception
-            do {
-                songs.add(cursor.getString(1));
-            } while (cursor.moveToNext());
-        }
-
+        Song songs[] = new Song[21];
+        for (int i=0; i<21;i++)
+            songs[i] = new Song();
+        queueSongs(cursor, songs);
         cursor.moveToFirst();
         cursor.moveToNext();
         cursor.moveToNext();
         cursor.moveToNext();
-        ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
+        cursor.moveToNext();
+        cursor.moveToNext();
+        ListAdapter listAdapter = new songAdapter(this, songs);
         final ListView listView = (ListView) findViewById(R.id.listView);
         long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
         final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
@@ -83,8 +92,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.v(TAG, "URI PATH: " + mySongUri.getPath());
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) { //this function should only have to find
+                Log.v(TAG, "URI PATH: " + mySongUri.getPath());                                //the song in an array or vector and play it from there, w/o a cursor
                 try {
                     final MediaPlayer mediaPlayer = new MediaPlayer();
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
