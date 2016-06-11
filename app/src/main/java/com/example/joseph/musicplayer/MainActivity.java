@@ -61,44 +61,31 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         ContentResolver resolver = getContentResolver();
         String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE, MediaStore.Audio.Media.DATA};
-        Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, MediaStore.Audio.Media.DATA, null, null);
-        cursor.moveToFirst();
-        int colIndex = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-        String path = cursor.getString(colIndex); //this
-        //Vector<String> songs = new Vector<>(0);
-        Uri uri = Uri.parse(path);
-        /*if (cursor.moveToFirst()) { //needs to check for first element to avoid nullptr exception
+        //final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, MediaStore.Audio.Media.DATA, null, null);
+        final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
+        Vector<String> songs = new Vector<>(0);
+
+        if (cursor.moveToFirst()) { //needs to check for first element to avoid nullptr exception
             do {
                 songs.add(cursor.getString(1));
             } while (cursor.moveToNext());
-        } */
-        //boolean f = cursor.moveToFirst();
-        //String x = String.valueOf(f);
-        //songs.add(0, x);
-
-        //----------------------------------
-        try {
-            MediaPlayer mediaPlayer = new MediaPlayer();
-            //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.setDataSource(MainActivity.this, uri);
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-        }catch(Exception e){
-            e.printStackTrace();
         }
-        cursor.close();
 
-        //----------------------------------
 
-       /* ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
+        //cursor.moveToFirst();
+        //int colIndex = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+        //String path = cursor.getString(colIndex); //this
+        //final Uri uri = Uri.parse(path);
+
+        ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
         final ListView listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                cursor.moveToFirst();
-                //Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-
+                //cursor.moveToFirst();
+                Uri uri = Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString());
+                Log.v(TAG, "URI PATH: " + uri.getPath());
                 try {
                     MediaPlayer mediaPlayer = new MediaPlayer();
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -111,10 +98,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 cursor.close();
             }
         });
-
-
-*/
-
     }
 
 
