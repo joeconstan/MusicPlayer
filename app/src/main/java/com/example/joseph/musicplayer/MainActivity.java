@@ -38,6 +38,18 @@ import java.util.Vector;
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
 
 
+    public boolean queueSongs(Cursor cursor, Vector<String> songs){
+        if (cursor.moveToFirst()) { //needs to check for first element to avoid nullptr exception
+            do {
+                songs.add(cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+
+
+      return true;
+    }
+
+
     public static final String TAG = MainActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,17 +76,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         //final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, MediaStore.Audio.Media.DATA, null, null);
         final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
         Vector<String> songs = new Vector<>(0);
-
-        if (cursor.moveToFirst()) { //needs to check for first element to avoid nullptr exception
-            do {
-                songs.add(cursor.getString(1));
-            } while (cursor.moveToNext());
-        }
-
+        queueSongs(cursor, songs);
         cursor.moveToFirst();
-        cursor.moveToNext();
-        cursor.moveToNext();
-        cursor.moveToNext();
         ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
         final ListView listView = (ListView) findViewById(R.id.listView);
         long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
@@ -83,8 +86,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.v(TAG, "URI PATH: " + mySongUri.getPath());
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) { //this function should only have to find
+                Log.v(TAG, "URI PATH: " + mySongUri.getPath());                                //the song in an array or vector and play it from there, w/o a cursor
                 try {
                     final MediaPlayer mediaPlayer = new MediaPlayer();
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
