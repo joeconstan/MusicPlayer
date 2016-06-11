@@ -38,11 +38,13 @@ import java.util.Vector;
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
 
 
-    public boolean queueSongs(Cursor cursor, Song songs){
+    public boolean queueSongs(Cursor cursor, Song songs[]){
         if (cursor.moveToFirst()) { //needs to check for first element to avoid nullptr exception
-            for (int i=0;i<30;i++){
-                songs[i].setTitle(cursor.getString(1));
-            } (cursor.moveToNext());
+            for (int j=0;j<21;j++){
+                songs[j].setTitle(cursor.getString(1));
+                songs[j].setTrack(cursor.getString(2));
+                cursor.moveToNext();
+            }
         }
 
 
@@ -72,11 +74,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         final ContentResolver resolver = getContentResolver();
         String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE, MediaStore.Audio.Media.DATA};
         final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-        //Vector<String> songs = new Vector<>(0);
-        Song songs[] = new Song[30];
+        Song songs[] = new Song[21];
+        for (int i=0; i<21;i++)
+            songs[i] = new Song();
         queueSongs(cursor, songs);
         cursor.moveToFirst();
-        ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
+        cursor.moveToNext();
+        cursor.moveToNext();
+        cursor.moveToNext();
+        cursor.moveToNext();
+        cursor.moveToNext();
+        ListAdapter listAdapter = new songAdapter(this, songs);
         final ListView listView = (ListView) findViewById(R.id.listView);
         long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
         final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
