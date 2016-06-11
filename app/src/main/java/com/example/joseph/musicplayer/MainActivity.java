@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 else {
                     Log.v(TAG, "Permission not granted");
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 1);
                 }
             }
 
@@ -71,12 +72,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             } while (cursor.moveToNext());
         }
 
-
-        //cursor.moveToFirst();
-        //int colIndex = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-        //String path = cursor.getString(colIndex); //this
-        //final Uri uri = Uri.parse(path);
-
+        cursor.moveToFirst();
         ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
         final ListView listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(listAdapter);
@@ -84,14 +80,22 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //cursor.moveToFirst();
-                Uri uri = Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString());
-                Log.v(TAG, "URI PATH: " + uri.getPath());
+                //Uri uri = (MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+                long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+                Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+                Log.v(TAG, "URI PATH: " + mySongUri.getPath());
                 try {
-                    MediaPlayer mediaPlayer = new MediaPlayer();
+                    final MediaPlayer mediaPlayer = new MediaPlayer();
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                    mediaPlayer.setDataSource(MainActivity.this, uri); //here
-                    mediaPlayer.prepare();
-                    mediaPlayer.start();
+                    mediaPlayer.setDataSource(getApplicationContext(), mySongUri); //here
+                    mediaPlayer.prepareAsync();
+                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            mediaPlayer.start();
+                        }
+                    });
+
                 }catch(Exception e){
                     e.printStackTrace();
                 }
