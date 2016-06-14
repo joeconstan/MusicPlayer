@@ -39,7 +39,7 @@ import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
 
-
+    boolean playing = false; //--------------------------------------------------------
     public boolean queueSongs(Cursor cursor, Song songs[]){
         if (cursor.moveToFirst()) { //needs to check for first element to avoid nullptr exception
             for (int j=0;j<21;j++){
@@ -92,10 +92,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
         cursor.close();
         listView.setAdapter(listAdapter);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) { //this function should only have to find
-                Log.v(TAG, "URI PATH: " + mySongUri.getPath());                                //the song in an array or vector and play it from there, w/o a cursor
+                Log.v(TAG, "URI PATH: " + mySongUri.getPath());          //the song in an array or vector and play it from there, w/o a cursor
                 try {
                     final MediaPlayer mediaPlayer = new MediaPlayer();
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -116,33 +117,43 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 }catch(Exception e) {e.printStackTrace();}
             }
         });
-        ImageButton button = (ImageButton) findViewById(R.id.playButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                {
-                    try {
-                        final MediaPlayer mediaPlayer = new MediaPlayer();
-                        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                        mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-                        mediaPlayer.prepareAsync();
-                        if (mediaPlayer.isPlaying()) {
-                            mediaPlayer.stop();
-                        } else {
-                            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                                @Override
-                                public void onPrepared(MediaPlayer mp) {
-                                    mediaPlayer.start();
-                                }
-                            });
 
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+        final MediaPlayer mediaPlayer;
+        try {
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mediaPlayer.start();
+                playing = true;
             }
         });
+
+        final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
+        if (playButton != null) {
+            playButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                        if (playing) {
+                            mediaPlayer.stop();
+                            playing = false;
+                        } else {
+                            mediaPlayer.prepareAsync();
+                        }
+                    }
+
+                    int imageID = getResources().getIdentifier("com.example.joseph.musicplayer:drawable/ic_pause", null, null);
+                    playButton.setImageResource
+
+                }
+            });
+        }
     }
 
 
