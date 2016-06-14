@@ -1,11 +1,13 @@
 package com.example.joseph.musicplayer;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.session.PlaybackState;
@@ -61,9 +63,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         setContentView(R.layout.activity_main);
 
 
-
-
-            if (Build.VERSION.SDK_INT >= 23) {
+        if (Build.VERSION.SDK_INT >= 23) {
                 boolean f = checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
                 if (f)
                     Log.v(TAG,"Permission is granted");
@@ -118,38 +118,46 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             }
         });
 
-        final MediaPlayer mediaPlayer;
-        try {
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mediaPlayer.start();
-                playing = true;
-            }
-        });
-
         final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
+        final MediaPlayer mediaPlayer = new MediaPlayer();
+
         if (playButton != null) {
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    try {
+
+                            //mediaPlayer.reset();
+                            //mediaPlayer.release();
+                        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        //mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+                        Log.v(TAG, "state: " + playing);
+
                         if (playing) {
                             mediaPlayer.stop();
+                            mediaPlayer.reset();
                             playing = false;
+                            int imageID = getResources().getIdentifier("com.example.joseph.musicplayer:drawable/ic_play", null, null);
+                            playButton.setImageResource(imageID);
                         } else {
-                            mediaPlayer.prepareAsync();
+
+                            mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+                            mediaPlayer.prepare();
+                            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                @Override
+                                public void onPrepared(MediaPlayer mp) {
+                                    mediaPlayer.start();
+                                    playing = true;
+                                }
+                            });
+                            int imageID2 = getResources().getIdentifier("com.example.joseph.musicplayer:drawable/ic_pause", null, null);
+                            playButton.setImageResource(imageID2);
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
-                    int imageID = getResources().getIdentifier("com.example.joseph.musicplayer:drawable/ic_pause", null, null);
-                    playButton.setImageResource
+
 
                 }
             });
