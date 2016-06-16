@@ -1,3 +1,28 @@
+/*
+display artist
+find a place for this list
+choose/start/stop by cclicking song
+stop button
+skip and back button
+album
+search
+other screen for individ song
+album artwork
+
+playlists
+other tabs (playlist, album, artist)
+shuffle
+loop
+
+
+
+
+design - fernando
+ */
+
+
+
+
 package com.example.joseph.musicplayer;
 
 import android.Manifest;
@@ -139,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             mediaPlayer.stop();
                             mediaPlayer.reset();
                             playing = false;
-                            int imageID = getResources().getIdentifier("com.example.joseph.musicplayer:drawable/ic_play", null, null);
+                            int imageID = getResources().getIdentifier("com.example.joseph.music:drawable/play_button", null, null);
                             playButton.setImageResource(imageID);
                         } else {
 
@@ -152,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                                     playing = true;
                                 }
                             });
-                            int imageID2 = getResources().getIdentifier("com.example.joseph.musicplayer:drawable/ic_pause", null, null);
+                            int imageID2 = getResources().getIdentifier("com.example.joseph.music:drawable/pause_button", null, null);
                             playButton.setImageResource(imageID2);
                         }
                     } catch (Exception e) {
