@@ -1,3 +1,9 @@
+/* bugs
+close the cursor
+handle isplaying problems
+setdatasource is commented out in the player button listener
+*/
+
 /*
 display artist
 find a place for this list
@@ -14,55 +20,35 @@ other tabs (playlist, album, artist)
 shuffle
 loop
 
-
-
-
 design - fernando
  */
-
 
 
 
 package com.example.joseph.musicplayer;
 
 import android.Manifest;
-import android.app.ActionBar;
-import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
-import android.os.Parcel;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.os.EnvironmentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
@@ -107,36 +93,38 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         for (int i=0; i<21;i++)
             songs[i] = new Song();
         queueSongs(cursor, songs);
-        cursor.moveToFirst();
-        cursor.moveToNext();
-        cursor.moveToNext();
-        cursor.moveToNext();
-        cursor.moveToNext();
-        cursor.moveToNext();
+
         ListAdapter listAdapter = new songAdapter(this, songs);
         final ListView listView = (ListView) findViewById(R.id.listView);
-        long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-        final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
-        cursor.close();
+
+
         listView.setAdapter(listAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) { //this function should only have to find
-                Log.v(TAG, "URI PATH: " + mySongUri.getPath());          //the song in an array or vector and play it from there, w/o a cursor
+                                                                                              //the song in an array or vector and play it from there, w/o a cursor
                 try {
+
+                    cursor.moveToPosition(position);
+                    long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+                    final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
                     final MediaPlayer mediaPlayer = new MediaPlayer();
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
                     mediaPlayer.prepareAsync();
-                    if (mediaPlayer.isPlaying()) {
+                    if (playing) {
                         mediaPlayer.stop();
+                        //mediaPlayer.reset();
+                        //mediaPlayer.release();
+                        playing = false;
                     }
                     else {
                         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                             @Override
                             public void onPrepared(MediaPlayer mp) {
                                 mediaPlayer.start();
+                                playing = true;
                             }
                         });
 
@@ -144,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 }catch(Exception e) {e.printStackTrace();}
             }
         });
+
 
         final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
         final MediaPlayer mediaPlayer = new MediaPlayer();
@@ -168,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             playButton.setImageResource(imageID);
                         } else {
 
-                            mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+//                          mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
                             mediaPlayer.prepare();
                             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                                 @Override
