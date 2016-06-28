@@ -1,7 +1,5 @@
 /* bugs
-close the cursor
-handle isplaying problems
-setdatasource is commented out in the player button listener
+
 */
 
 /*
@@ -19,7 +17,7 @@ other tabs (playlist, album, artist)
 shuffle
 loop
 
-design - fernando
+design
  */
 
 
