@@ -35,6 +35,7 @@
     android:layout_width="match_parent"
     android:layout_height="50sp"
     android:layout_below="@id/listView">
+
     <ImageButton
         android:src="@mipmap/play_buttm"
         android:layout_width="50sp"
@@ -44,21 +45,24 @@
 
     <ImageButton
         android:src="@mipmap/forw_button"
-        android:layout_width="50sp"
-        android:layout_height="50sp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/forwButton"
         android:layout_toRightOf="@+id/playButton"
-        android:layout_centerHorizontal="true"/>
+        android:scaleType="fitCenter"
+        />
 
 
 
     <ImageButton
         android:src="@mipmap/backw_button"
-        android:layout_width="50sp"
-        android:layout_height="50sp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/backwButton"
         android:layout_toLeftOf="@+id/playButton"
-        android:layout_centerHorizontal="true"/>
+        android:scaleType="fitCenter"
+
+        />
 
 
 
