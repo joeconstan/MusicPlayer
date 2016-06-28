@@ -7,7 +7,6 @@ setdatasource is commented out in the player button listener
 /*
 display artist
 find a place for this list
-choose/start/stop by cclicking song
 stop button
 skip and back button
 album
@@ -99,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
 
         listView.setAdapter(listAdapter);
-
+        cursor.moveToFirst();
         final MediaPlayer mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -112,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         Log.v(TAG, "about to stop");
                         mediaPlayer.stop();
                         mediaPlayer.reset();
-                        //mediaPlayer.release();
                         playing = false;
                     }
                     cursor.moveToPosition(position);
@@ -135,51 +133,48 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         });
 
 
-        //final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
+        final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
 
-       /* if (playButton != null) {
+        if (playButton != null) {
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
-
-                            //mediaPlayer.reset();
-                            //mediaPlayer.release();
-                        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                        //mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-                        Log.v(TAG, "state: " + playing);
-
                         if (playing) {
+                            Log.v(TAG, "about to stop");
                             mediaPlayer.stop();
                             mediaPlayer.reset();
                             playing = false;
-                            int imageID = getResources().getIdentifier("com.example.joseph.music:drawable/play_button", null, null);
-                            playButton.setImageResource(imageID);
-                        } else {
+                            //setbuttonimage
+                            int id = getResources().getIdentifier("play_buttm", "mipmap", getPackageName());
+                            playButton.setImageResource(id);
+                        }
 
-//                          mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-                            mediaPlayer.prepare();
+                        else{
+                            long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+                            final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+                            mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+                            //setbuttonimage
+                            int id = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
+                            playButton.setImageResource(id);
                             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                                 @Override
                                 public void onPrepared(MediaPlayer mp) {
+                                    Log.v(TAG, "about to start");
                                     mediaPlayer.start();
                                     playing = true;
                                 }
                             });
-                            int imageID2 = getResources().getIdentifier("com.example.joseph.music:drawable/pause_button", null, null);
-                            playButton.setImageResource(imageID2);
+                            mediaPlayer.prepareAsync();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
 
 
+                    }catch(Exception e) {e.printStackTrace();}
 
                 }
             });
         }
-*/    }
-
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
