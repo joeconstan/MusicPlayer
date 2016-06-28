@@ -29,6 +29,7 @@ package com.example.joseph.musicplayer;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioManager;
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         ListAdapter listAdapter = new songAdapter(this, songs);
         final ListView listView = (ListView) findViewById(R.id.listView);
 
-
+        final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
         listView.setAdapter(listAdapter);
         cursor.moveToFirst();
         final MediaPlayer mediaPlayer = new MediaPlayer();
@@ -107,17 +108,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 try {
 
 
-                    if (playing) {
-                        Log.v(TAG, "about to stop");
-                        mediaPlayer.stop();
-                        mediaPlayer.reset();
-                        playing = false;
-                    }
+                    //if (playing) {
+                        //Log.v(TAG, "about to stop");
+                        //playing = false;}
+                    mediaPlayer.stop();
+                    mediaPlayer.reset();
                     cursor.moveToPosition(position);
                     long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
                     final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
                     mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-
+                    int pic = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
+                    playButton.setImageResource(pic);
                         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                             @Override
                             public void onPrepared(MediaPlayer mp) {
@@ -129,48 +130,56 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         mediaPlayer.prepareAsync();
 
                 }catch(Exception e) {e.printStackTrace();}
+
+                Intent intent = new Intent(view.getContext(), Songscreen.class);
+                startActivity(intent);
+
+
             }
         });
 
-
-        final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
 
         if (playButton != null) {
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //int length = 0;
                     try {
                         if (playing) {
                             Log.v(TAG, "about to stop");
-                            mediaPlayer.stop();
-                            mediaPlayer.reset();
+                            //mediaPlayer.pause();
+                            //mediaPlayer.reset();
+                            mediaPlayer.pause();
+                            //length = mediaPlayer.getCurrentPosition();
                             playing = false;
-                            //setbuttonimage
                             int id = getResources().getIdentifier("play_buttm", "mipmap", getPackageName());
                             playButton.setImageResource(id);
+
                         }
 
                         else{
-                            long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-                            final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
-                            mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+                            //long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+                            //final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+                            //mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
                             //setbuttonimage
                             int id = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
                             playButton.setImageResource(id);
-                            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                                @Override
-                                public void onPrepared(MediaPlayer mp) {
-                                    Log.v(TAG, "about to start");
-                                    mediaPlayer.start();
-                                    playing = true;
-                                }
-                            });
-                            mediaPlayer.prepareAsync();
+                            //mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                              //  @Override
+                               // public void onPrepared(MediaPlayer mp) {
+                                //    Log.v(TAG, "about to start");
+                                 //   mediaPlayer.start();
+                                  //  playing = true;
+                             //   }
+                            //});
+                            //mediaPlayer.prepareAsync();
+                           // mediaPlayer.seekTo(length);
+
+                            mediaPlayer.start();
+                            playing = true;
                         }
 
-
                     }catch(Exception e) {e.printStackTrace();}
-
                 }
             });
         }
