@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -72,20 +73,20 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         setSupportActionBar(mToolbar);
 
         if (Build.VERSION.SDK_INT >= 23) {
-                boolean f = checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-                if (f)
-                    Log.v(TAG,"Permission is granted");
-                else {
-                    Log.v(TAG, "Permission not granted");
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                }
+            boolean f = checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+            if (f)
+                Log.v(TAG, "Permission is granted");
+            else {
+                Log.v(TAG, "Permission not granted");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             }
+        }
 
         final ContentResolver resolver = getContentResolver();
         String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE, MediaStore.Audio.Media.DATA};
         final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
         Song songs[] = new Song[21];
-        for (int i=0; i<21;i++)
+        for (int i = 0; i < 21; i++)
             songs[i] = new Song();
         queueSongs(cursor, songs);
 
@@ -95,23 +96,28 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
         listView.setAdapter(listAdapter);
         cursor.moveToFirst();
+
+        final ImageButton fwdButton = (ImageButton) findViewById(R.id.forwButton);
+        final ImageButton backButton = (ImageButton) findViewById(R.id.backwButton);
+
         final MediaPlayer mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-        final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+        long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+        final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
         try {
             mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-        }catch(Exception e) {e.printStackTrace();}
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    Log.v(TAG, "about to start");
-                    mediaPlayer.start();
-                    prepared = true;
-                    playing = true;
-                }
-            });
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                Log.v(TAG, "about to start");
+                mediaPlayer.start();
+                prepared = true;
+                playing = true;
+            }
+        });
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -123,15 +129,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     }
                     mediaPlayer.reset();
                     cursor.moveToPosition(position);
-                    long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-                    final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+                    long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+                    final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
                     mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
                     int pic = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
                     playButton.setImageResource(pic);
 
-                        mediaPlayer.prepareAsync();
+                    mediaPlayer.prepareAsync();
 
-                }catch(Exception e) {e.printStackTrace();}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 Intent intent = new Intent(view.getContext(), Songscreen.class);
                 String songName = cursor.getString(1);
@@ -153,26 +161,94 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             playing = false;
                             int id = getResources().getIdentifier("play_buttm", "mipmap", getPackageName());
                             playButton.setImageResource(id);
-                        }
-
-                        else{
+                        } else {
                             int id = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
                             playButton.setImageResource(id);
                             if (!prepared) {
                                 mediaPlayer.prepareAsync();
-                            }
-                            else{
+                            } else {
                                 mediaPlayer.start();
                             }
-                                playing = true;
+                            playing = true;
                         }
-                    }catch(Exception e) {e.printStackTrace();}
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+
+
+        //Forward button
+        if (fwdButton != null)
+        {
+            fwdButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v) {
+                    try
+                    {
+                        if (playing)
+                        {
+                            mediaPlayer.stop();
+                        }
+                        mediaPlayer.reset();
+                        cursor.moveToNext();
+                        long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+                        final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+                        mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+                        int pic = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
+                        playButton.setImageResource(pic);
+
+                        mediaPlayer.prepareAsync();
+
+                    } catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+
+        //back button
+        if (backButton != null)
+        {
+            backButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v) {
+                    try
+                    {
+                        if (playing)
+                        {
+                            mediaPlayer.stop();
+                        }
+                        mediaPlayer.reset();
+
+                        cursor.moveToPrevious();
+
+                        if(cursor.isBeforeFirst())
+                        {
+                            int pic = getResources().getIdentifier("play_buttm", "mipmap", getPackageName());
+                            playButton.setImageResource(pic);
+                            cursor.moveToNext();
+                        }
+                        long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+                        final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+                        mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+                        int pic = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
+                        playButton.setImageResource(pic);
+
+                        mediaPlayer.prepareAsync();
+
+                    } catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
     }
-
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -182,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             //resume tasks needing this permission
         }
     }
+
 
 
 }
