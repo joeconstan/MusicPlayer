@@ -52,8 +52,6 @@
         android:scaleType="fitCenter"
         />
 
-
-
     <ImageButton
         android:src="@mipmap/backw_button"
         android:layout_width="50dp"
