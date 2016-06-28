@@ -100,44 +100,44 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         listView.setAdapter(listAdapter);
 
+        final MediaPlayer mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) { //this function should only have to find
-                                                                                              //the song in an array or vector and play it from there, w/o a cursor
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
 
-                    cursor.moveToPosition(position);
-                    long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-                    final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
-                    final MediaPlayer mediaPlayer = new MediaPlayer();
-                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                    mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-                    mediaPlayer.prepareAsync();
+
                     if (playing) {
+                        Log.v(TAG, "about to stop");
                         mediaPlayer.stop();
-                        //mediaPlayer.reset();
+                        mediaPlayer.reset();
                         //mediaPlayer.release();
                         playing = false;
                     }
-                    else {
+                    cursor.moveToPosition(position);
+                    long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+                    final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+                    mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+
                         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                             @Override
                             public void onPrepared(MediaPlayer mp) {
+                                Log.v(TAG, "about to start");
                                 mediaPlayer.start();
                                 playing = true;
                             }
                         });
+                        mediaPlayer.prepareAsync();
 
-                    }
                 }catch(Exception e) {e.printStackTrace();}
             }
         });
 
 
-        final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
-        final MediaPlayer mediaPlayer = new MediaPlayer();
+        //final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
 
-        if (playButton != null) {
+       /* if (playButton != null) {
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 }
             });
         }
-    }
+*/    }
 
 
     @Override
