@@ -31,14 +31,38 @@
         android:layout_marginTop="50sp"
         android:layout_below="@+id/m_toolbar"/>
 
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="50sp"
+    android:layout_below="@id/listView">
     <ImageButton
         android:src="@mipmap/play_buttm"
         android:layout_width="50sp"
         android:layout_height="50sp"
         android:id="@+id/playButton"
-        android:layout_below="@+id/listView"
         android:layout_centerHorizontal="true"/>
+
+    <ImageButton
+        android:src="@mipmap/forw_button"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        android:id="@+id/forwButton"
+        android:layout_toRightOf="@+id/playButton"
+        android:layout_centerHorizontal="true"/>
+
+
+
+    <ImageButton
+        android:src="@mipmap/backw_button"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        android:id="@+id/backwButton"
+        android:layout_toLeftOf="@+id/playButton"
+        android:layout_centerHorizontal="true"/>
+
+
+
+</RelativeLayout>
 
 
 
