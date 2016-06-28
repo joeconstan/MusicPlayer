@@ -52,6 +52,7 @@ import android.widget.ListView;
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
 
     boolean playing = false; //--------------------------------------------------------
+    boolean prepared = false;
     public boolean queueSongs(Cursor cursor, Song songs[]){
         if (cursor.moveToFirst()) {
             for (int j=0;j<21;j++){
@@ -98,16 +99,30 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         cursor.moveToFirst();
         final MediaPlayer mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+        final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+        try {
+            mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+        }catch(Exception e) {e.printStackTrace();}
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    Log.v(TAG, "about to start");
+                    mediaPlayer.start();
+                    prepared = true;
+                    playing = true;
+                }
+            });
+
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
-
-
-                    //if (playing) {
-                        //Log.v(TAG, "about to stop");
-                        //playing = false;}
-                    mediaPlayer.stop();
+                    if (playing) {
+                        mediaPlayer.stop();
+                    }
                     mediaPlayer.reset();
                     cursor.moveToPosition(position);
                     long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
@@ -115,16 +130,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
                     int pic = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
                     playButton.setImageResource(pic);
-                        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                            @Override
-                            public void onPrepared(MediaPlayer mp) {
-                                Log.v(TAG, "about to start");
-                                mediaPlayer.start();
-                                playing = true;
-                            }
-                        });
+                    if (!prepared) {
                         mediaPlayer.prepareAsync();
-
+                    }
                 }catch(Exception e) {e.printStackTrace();}
 
                 Intent intent = new Intent(view.getContext(), Songscreen.class);
@@ -139,14 +147,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //int length = 0;
                     try {
                         if (playing) {
                             Log.v(TAG, "about to stop");
-                            //mediaPlayer.pause();
-                            //mediaPlayer.reset();
                             mediaPlayer.pause();
-                            //length = mediaPlayer.getCurrentPosition();
                             playing = false;
                             int id = getResources().getIdentifier("play_buttm", "mipmap", getPackageName());
                             playButton.setImageResource(id);
@@ -154,25 +158,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         }
 
                         else{
-                            //long mySongId=cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-                            //final Uri mySongUri=ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
-                            //mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-                            //setbuttonimage
                             int id = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
                             playButton.setImageResource(id);
-                            //mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                              //  @Override
-                               // public void onPrepared(MediaPlayer mp) {
-                                //    Log.v(TAG, "about to start");
-                                 //   mediaPlayer.start();
-                                  //  playing = true;
-                             //   }
-                            //});
-                            //mediaPlayer.prepareAsync();
-                           // mediaPlayer.seekTo(length);
-
-                            mediaPlayer.start();
-                            playing = true;
+                            if (!prepared) {
+                                mediaPlayer.prepareAsync();
+                            }
+                                playing = true;
                         }
 
                     }catch(Exception e) {e.printStackTrace();}
