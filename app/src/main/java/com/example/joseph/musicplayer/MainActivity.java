@@ -5,7 +5,6 @@
 /*
 display artist
 find a place for this list
-stop button
 skip and back button
 album
 search
@@ -51,7 +50,7 @@ import android.widget.ListView;
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
 
-    boolean playing = false; //--------------------------------------------------------
+    boolean playing = false;
     boolean prepared = false;
     public boolean queueSongs(Cursor cursor, Song songs[]){
         if (cursor.moveToFirst()) {
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
       return true;
     }
-
 
     public static final String TAG = MainActivity.class.getSimpleName();
     @Override
@@ -130,14 +128,15 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
                     int pic = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
                     playButton.setImageResource(pic);
-                    if (!prepared) {
+
                         mediaPlayer.prepareAsync();
-                    }
+
                 }catch(Exception e) {e.printStackTrace();}
 
                 Intent intent = new Intent(view.getContext(), Songscreen.class);
+                String songName = cursor.getString(1);
+                intent.putExtra("trackTitle", songName);
                 startActivity(intent);
-
 
             }
         });
@@ -154,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             playing = false;
                             int id = getResources().getIdentifier("play_buttm", "mipmap", getPackageName());
                             playButton.setImageResource(id);
-
                         }
 
                         else{
@@ -163,14 +161,18 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             if (!prepared) {
                                 mediaPlayer.prepareAsync();
                             }
+                            else{
+                                mediaPlayer.start();
+                            }
                                 playing = true;
                         }
-
                     }catch(Exception e) {e.printStackTrace();}
                 }
             });
         }
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

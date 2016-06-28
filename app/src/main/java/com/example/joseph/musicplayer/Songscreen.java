@@ -1,6 +1,7 @@
 package com.example.joseph.musicplayer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -17,7 +18,11 @@ public class Songscreen extends Activity {
         //setSupportActionBar(mToolbar);
 
 
+        Intent intent = getIntent();
+        String songName = intent.getStringExtra("trackTitle");
+
         TextView texts1 = (TextView) findViewById(R.id.texts1);
+        texts1.setText(songName);
 
 
     }
