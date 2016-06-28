@@ -55,15 +55,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     boolean playing = false; //--------------------------------------------------------
     public boolean queueSongs(Cursor cursor, Song songs[]){
-        if (cursor.moveToFirst()) { //needs to check for first element to avoid nullptr exception
+        if (cursor.moveToFirst()) {
             for (int j=0;j<21;j++){
                 songs[j].setTitle(cursor.getString(1));
                 songs[j].setTrack(cursor.getString(2));
                 cursor.moveToNext();
             }
         }
-
-
       return true;
     }
 
