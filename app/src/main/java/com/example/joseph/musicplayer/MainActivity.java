@@ -1,23 +1,5 @@
-/* bugs
 
-*/
 
-/*
-display artist
-find a place for this list
-skip and back button
-album
-search
-other screen for individ song
-album artwork
-
-playlists
-other tabs (playlist, album, artist)
-shuffle
-loop
-
-design
- */
 
 
 
@@ -258,8 +240,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             //resume tasks needing this permission
         }
     }
-
-
 
 }
 
