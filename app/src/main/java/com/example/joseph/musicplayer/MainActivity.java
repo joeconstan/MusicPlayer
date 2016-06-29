@@ -6,14 +6,13 @@
 package com.example.joseph.musicplayer;
 
 import android.Manifest;
-import android.app.ListActivity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioManager;
-import android.media.Image;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -34,6 +33,7 @@ import android.widget.ListView;
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
 
+    final MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
     boolean playing = false;
     boolean prepared = false;
     public boolean queueSongs(Cursor cursor, Song songs[]){
@@ -41,6 +41,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             for (int j=0;j<21;j++){
                 songs[j].setTitle(cursor.getString(1));
                 songs[j].setTrack(cursor.getString(2));
+                long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+                Uri mySongUr = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+                metaRetriever.setDataSource(this.getApplicationContext(), mySongUr);
+                String artist =  metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                songs[j].setArtist(artist);
                 cursor.moveToNext();
             }
         }
