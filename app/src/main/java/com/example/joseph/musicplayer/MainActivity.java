@@ -6,6 +6,7 @@
 package com.example.joseph.musicplayer;
 
 import android.Manifest;
+import android.app.ListActivity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
       return true;
     }
+
 
     public static final String TAG = MainActivity.class.getSimpleName();
     @Override
@@ -114,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
                     final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
                     mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-                    int pic = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
+                    int pic = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
                     playButton.setImageResource(pic);
 
                     mediaPlayer.prepareAsync();
