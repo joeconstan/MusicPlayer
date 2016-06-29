@@ -141,10 +141,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             Log.v(TAG, "about to stop");
                             mediaPlayer.pause();
                             playing = false;
-                            int id = getResources().getIdentifier("play_buttm", "mipmap", getPackageName());
+                            int id = getResources().getIdentifier("play_butt_white", "mipmap", getPackageName());
                             playButton.setImageResource(id);
                         } else {
-                            int id = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
+                            int id = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
                             playButton.setImageResource(id);
                             if (!prepared) {
                                 mediaPlayer.prepareAsync();
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
                         final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
                         mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-                        int pic = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
+                        int pic = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
                         playButton.setImageResource(pic);
 
                         mediaPlayer.prepareAsync();
@@ -211,14 +211,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                         if(cursor.isBeforeFirst())
                         {
-                            int pic = getResources().getIdentifier("play_buttm", "mipmap", getPackageName());
+                            int pic = getResources().getIdentifier("play_butt_white", "mipmap", getPackageName());
                             playButton.setImageResource(pic);
                             cursor.moveToNext();
                         }
                         long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
                         final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
                         mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-                        int pic = getResources().getIdentifier("pause_buttm", "mipmap", getPackageName());
+                        int pic = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
                         playButton.setImageResource(pic);
 
                         mediaPlayer.prepareAsync();

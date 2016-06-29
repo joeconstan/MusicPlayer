@@ -49,7 +49,7 @@
         >
 
         <ImageButton
-            android:src="@mipmap/play_buttm"
+            android:src="@mipmap/play_butt_white"
             android:layout_width="30sp"
             android:layout_height="30sp"
             android:scaleType="fitCenter"
@@ -59,7 +59,7 @@
             android:layout_centerHorizontal="true"/>
 
         <ImageButton
-            android:src="@mipmap/forw_button"
+            android:src="@mipmap/forw_white"
             android:layout_width="30sp"
             android:layout_height="30sp"
             android:background="@null"
@@ -71,7 +71,7 @@
             />
 
         <ImageButton
-            android:src="@mipmap/backw_button"
+            android:src="@mipmap/backwhite"
             android:layout_width="30sp"
             android:layout_height="30sp"
             android:background="@null"
