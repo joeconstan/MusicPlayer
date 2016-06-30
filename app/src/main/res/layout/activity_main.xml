@@ -23,7 +23,6 @@
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:titleTextColor="#FFFFFF"
-
         />
 
 
@@ -46,6 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="60sp"
         android:layout_below="@id/listView"
+        android:background="#1E90FF"
         >
 
         <ImageButton
