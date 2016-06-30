@@ -31,6 +31,9 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
@@ -39,27 +42,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     boolean playing = false;
     boolean prepared = false;
 
-
-    public Bitmap getImage(String filepath)              //filepath is path of music file
-    {
-        Bitmap image;
-
-        MediaMetadataRetriever mData=new MediaMetadataRetriever();
-        mData.setDataSource(filepath);
-        try{
-            byte art[]=mData.getEmbeddedPicture();
-            image= BitmapFactory.decodeByteArray(art, 0, art.length);
-        }
-        catch(Exception e)
-        {
-            image=null;
-        }
-        return image;
-    }
-
-
-
-
+    String path;
     public boolean queueSongs(Cursor cursor, Song songs[]){
         if (cursor.moveToFirst()) {
             for (int j=0;j<21;j++){
@@ -71,10 +54,24 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 String artist =  metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                 songs[j].setArtist(artist);
 
-                String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+                byte[] arr = metaRetriever.getEmbeddedPicture();
 
-                Bitmap bm = getImage(path);
+                InputStream is = new ByteArrayInputStream(arr);
+                Bitmap bm = BitmapFactory.decodeStream(is);
                 songs[j].setAlbumArt(bm);
+
+/*
+                Bitmap bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.length);
+                ByteArrayOutputStream blob = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 0 , blob);
+                //byte[] bitmapdata = blob.toByteArray();
+
+                songs[j].setAlbumArt(bitmap);
+*/
+                //path = cursor.getString(cursor.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM_ART));
+
+                //Bitmap bm = getImage(path);
+                //songs[j].setAlbumArt(bm);
 
                 cursor.moveToNext();
             }
