@@ -11,6 +11,8 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
@@ -36,6 +38,28 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     final MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
     boolean playing = false;
     boolean prepared = false;
+
+
+    public Bitmap getImage(String filepath)              //filepath is path of music file
+    {
+        Bitmap image;
+
+        MediaMetadataRetriever mData=new MediaMetadataRetriever();
+        mData.setDataSource(filepath);
+        try{
+            byte art[]=mData.getEmbeddedPicture();
+            image= BitmapFactory.decodeByteArray(art, 0, art.length);
+        }
+        catch(Exception e)
+        {
+            image=null;
+        }
+        return image;
+    }
+
+
+
+
     public boolean queueSongs(Cursor cursor, Song songs[]){
         if (cursor.moveToFirst()) {
             for (int j=0;j<21;j++){
@@ -46,6 +70,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 metaRetriever.setDataSource(this.getApplicationContext(), mySongUr);
                 String artist =  metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                 songs[j].setArtist(artist);
+
+                String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+
+                Bitmap bm = getImage(path);
+                songs[j].setAlbumArt(bm);
+
                 cursor.moveToNext();
             }
         }

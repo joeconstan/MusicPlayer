@@ -1,11 +1,13 @@
 package com.example.joseph.musicplayer;
 
 
+import android.graphics.Bitmap;
+
 public class Song
 {
     private String title;
     private String artist;
-    //private String Album;
+    private Bitmap albumArt;
     private String track;
 
     public Song getSong(){
@@ -24,10 +26,12 @@ public class Song
         return artist;
     }
 
+    public Bitmap getAlbumArt(){return albumArt; }
+
     public void setArtist(String artist) {
         this.artist = artist;
     }
-
+    public void setAlbumArt(Bitmap art){this.albumArt = art; }
     public void setTitle(String title) {
         this.title = title;
     }

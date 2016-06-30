@@ -28,4 +28,16 @@
         android:layout_gravity="center_horizontal"
         android:textColor="#cccddd" />
 
+
+    <ImageView
+        android:layout_width="70sp"
+        android:layout_height="70sp"
+        android:id="@+id/albumArt"
+        android:layout_toLeftOf="@+id/titleText"
+        />
+
+
+
+
+
 </RelativeLayout>

@@ -2,10 +2,12 @@ package com.example.joseph.musicplayer;
 
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class songAdapter extends ArrayAdapter<Song>{
@@ -20,6 +22,8 @@ public class songAdapter extends ArrayAdapter<Song>{
         Song song = getItem(position);
         TextView titleText = (TextView) customView.findViewById(R.id.titleText);
         TextView artistText = (TextView) customView.findViewById(R.id.artistText);
+        ImageView albumArt = (ImageView) customView.findViewById(R.id.albumArt);
+        albumArt.setImageBitmap(song.getAlbumArt());
         titleText.setText(song.getTitle());
         artistText.setText(song.getArtist());
         return customView;
