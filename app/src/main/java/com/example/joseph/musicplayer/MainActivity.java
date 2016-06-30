@@ -55,10 +55,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 songs[j].setArtist(artist);
 
                 byte[] arr = metaRetriever.getEmbeddedPicture();
-
-                InputStream is = new ByteArrayInputStream(arr);
-                Bitmap bm = BitmapFactory.decodeStream(is);
-                songs[j].setAlbumArt(bm);
+                if (arr==null){
+                    Log.v(TAG, "TAG: its null bro");
+                }
+                else {
+                    InputStream is = new ByteArrayInputStream(arr);
+                    Bitmap bm = BitmapFactory.decodeStream(is);
+                    songs[j].setAlbumArt(bm);
+                }
 
 /*
                 Bitmap bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.length);
