@@ -42,18 +42,19 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     boolean playing = false;
     boolean prepared = false;
 
-    String path;
     public boolean queueSongs(Cursor cursor, Song songs[]){
         if (cursor.moveToFirst()) {
             for (int j=0;j<21;j++){
                 songs[j].setTitle(cursor.getString(1));
                 songs[j].setTrack(cursor.getString(2));
+                Log.v(TAG, "path: " + songs[j].getTrack());
                 long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
                 Uri mySongUr = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
                 metaRetriever.setDataSource(this.getApplicationContext(), mySongUr);
                 String artist =  metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                 songs[j].setArtist(artist);
 
+                metaRetriever.setDataSource(songs[j].getTrack());
                 byte[] arr = metaRetriever.getEmbeddedPicture();
                 if (arr==null){
                     Log.v(TAG, "TAG: its null bro");
