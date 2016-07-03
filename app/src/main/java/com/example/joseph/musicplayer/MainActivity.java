@@ -55,26 +55,28 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 String artist = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                 songs[j].setArtist(artist);
                 String albumId = MediaStore.Audio.Media.ALBUM_ID;
-                Cursor curs = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                        new String[]{MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART},
-                        MediaStore.Audio.Albums._ID + "=?",
-                        new String[]{String.valueOf(albumId)},
-                        null);
+                String[] projection = new String[]{MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART};
+
+
+                Cursor curs = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, projection, null, null, null);
 
                 if (curs.moveToFirst()) {
                     Log.v(TAG, "YES");
                     String path = curs.getString(curs.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
                     metaRetriever.setDataSource(path);
                     byte[] arr = metaRetriever.getEmbeddedPicture();
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.length);
-                    ByteArrayOutputStream blob = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, blob);
-                    songs[j].setAlbumArt(bitmap);
+                    if (!(arr == null)){
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.length);
+                        ByteArrayOutputStream blob = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 0, blob);
+                        songs[j].setAlbumArt(bitmap);
+                    }
 
-                    cursor.moveToNext();
                 }
+                cursor.moveToNext();
             }
         }
+
       return true;
     }
 
