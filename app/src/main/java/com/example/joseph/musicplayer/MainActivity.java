@@ -34,6 +34,7 @@ import android.widget.ListView;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.URI;
 
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
@@ -44,41 +45,34 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     public boolean queueSongs(Cursor cursor, Song songs[]){
         if (cursor.moveToFirst()) {
-            for (int j=0;j<21;j++){
+            for (int j=0;j<21;j++) {
                 songs[j].setTitle(cursor.getString(1));
                 songs[j].setTrack(cursor.getString(2));
                 Log.v(TAG, "path: " + songs[j].getTrack());
                 long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
                 Uri mySongUr = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
                 metaRetriever.setDataSource(this.getApplicationContext(), mySongUr);
-                String artist =  metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                String artist = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                 songs[j].setArtist(artist);
+                String albumId = MediaStore.Audio.Media.ALBUM_ID;
+                Cursor curs = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                        new String[]{MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART},
+                        MediaStore.Audio.Albums._ID + "=?",
+                        new String[]{String.valueOf(albumId)},
+                        null);
 
-                metaRetriever.setDataSource(songs[j].getTrack());
-                byte[] arr = metaRetriever.getEmbeddedPicture();
-                if (arr==null){
-                    Log.v(TAG, "TAG: its null bro");
+                if (curs.moveToFirst()) {
+                    Log.v(TAG, "YES");
+                    String path = curs.getString(curs.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+                    metaRetriever.setDataSource(path);
+                    byte[] arr = metaRetriever.getEmbeddedPicture();
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.length);
+                    ByteArrayOutputStream blob = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, blob);
+                    songs[j].setAlbumArt(bitmap);
+
+                    cursor.moveToNext();
                 }
-                else {
-                    InputStream is = new ByteArrayInputStream(arr);
-                    Bitmap bm = BitmapFactory.decodeStream(is);
-                    songs[j].setAlbumArt(bm);
-                }
-
-/*
-                Bitmap bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.length);
-                ByteArrayOutputStream blob = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 0 , blob);
-                //byte[] bitmapdata = blob.toByteArray();
-
-                songs[j].setAlbumArt(bitmap);
-*/
-                //path = cursor.getString(cursor.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM_ART));
-
-                //Bitmap bm = getImage(path);
-                //songs[j].setAlbumArt(bm);
-
-                cursor.moveToNext();
             }
         }
       return true;
