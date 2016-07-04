@@ -30,6 +30,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 metaRetriever.setDataSource(this.getApplicationContext(), mySongUr);
                 String artist = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                 songs[j].setArtist(artist);
-                String albumId = MediaStore.Audio.Media.ALBUM_ID;
+                /*String albumId = MediaStore.Audio.Media.ALBUM_ID;
                 String[] projection = new String[]{MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART};
 
 
@@ -71,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         bitmap.compress(Bitmap.CompressFormat.PNG, 0, blob);
                         songs[j].setAlbumArt(bitmap);
                     }
-
-                }
+                curs.close();
+                } */
                 cursor.moveToNext();
             }
         }
@@ -158,10 +159,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     e.printStackTrace();
                 }
 
-                Intent intent = new Intent(view.getContext(), Songscreen.class);
+                /*Intent intent = new Intent(view.getContext(), Songscreen.class);
                 String songName = cursor.getString(1);
                 intent.putExtra("trackTitle", songName);
-                startActivity(intent);
+                startActivity(intent); */
 
             }
         });
@@ -265,6 +266,20 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 }
             });
         }
+
+
+        RelativeLayout buttonPanel = (RelativeLayout) findViewById(R.id.buttonPanel);
+        buttonPanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(v.getContext(), Songscreen.class);
+                intent1.putExtra("songTitle", cursor.getString(1)); //needs fixing, shouldnt still be using cursor here
+                startActivity(intent1);
+            }
+
+        });
+
+
     }
 
     @Override

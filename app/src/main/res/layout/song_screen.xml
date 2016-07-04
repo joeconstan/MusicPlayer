@@ -1,20 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
 
 
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/texts1"
-    android:text="hi"
-    android:textSize="30sp"
-    />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        android:background="#1E90FF"
+        android:layout_marginTop="509sp"
+        >
+
+        <ImageButton
+            android:src="@mipmap/play_butt_white"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:scaleType="fitCenter"
+            android:background="@null"
+            android:id="@+id/playButtonSong"
+            android:layout_marginTop="20sp"
+            android:layout_centerHorizontal="true"/>
+
+        <ImageButton
+            android:src="@mipmap/forw_white"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:background="@null"
+            android:id="@+id/forwButtonSong"
+            android:layout_toRightOf="@+id/playButtonSong"
+            android:layout_marginLeft="20sp"
+            android:layout_marginTop="20sp"
+
+            android:scaleType="fitCenter"
+            />
+
+        <ImageButton
+            android:src="@mipmap/backwhite"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:background="@null"
+            android:id="@+id/backwButtonSongSong"
+            android:layout_toLeftOf="@+id/playButtonSong"
+            android:layout_marginRight="20sp"
+            android:layout_marginTop="20sp"
+            android:scaleType="fitCenter"
+
+            />
+
+
+
+    </RelativeLayout>
 
 
 
 
-</LinearLayout>
+</RelativeLayout>

@@ -19,11 +19,8 @@ public class Songscreen extends Activity {
 
 
         Intent intent = getIntent();
-        String songName = intent.getStringExtra("trackTitle");
-
-        TextView texts1 = (TextView) findViewById(R.id.texts1);
-        texts1.setText(songName);
-
+        String songName = intent.getStringExtra("songTitle");
+        
 
     }
 }
