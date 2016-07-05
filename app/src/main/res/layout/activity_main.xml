@@ -49,7 +49,25 @@
         android:id="@+id/buttonPanel"
         >
 
-        <ImageButton
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/titlePanelText"
+            android:layout_centerHorizontal="true"
+            android:textSize="25sp"
+            android:textColor="#FFFFFF"
+            />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/artistPanelText"
+
+            />
+
+        <!--<ImageButton
             android:src="@mipmap/play_butt_white"
             android:layout_width="30sp"
             android:layout_height="30sp"
@@ -84,7 +102,7 @@
             android:layout_marginTop="20sp"
             android:scaleType="fitCenter"
 
-            />
+            /> -->
 
 
 

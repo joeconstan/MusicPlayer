@@ -31,6 +31,9 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -111,12 +114,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         ListAdapter listAdapter = new songAdapter(this, songs);
         final ListView listView = (ListView) findViewById(R.id.listView);
 
-        final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
+        //final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
         listView.setAdapter(listAdapter);
         cursor.moveToFirst();
 
-        final ImageButton fwdButton = (ImageButton) findViewById(R.id.forwButton);
-        final ImageButton backButton = (ImageButton) findViewById(R.id.backwButton);
+        //final ImageButton fwdButton = (ImageButton) findViewById(R.id.forwButton);
+        //final ImageButton backButton = (ImageButton) findViewById(R.id.backwButton);
+        final TextView titlePanelText = (TextView) findViewById(R.id.titlePanelText);
+        final TextView artistPanelText = (TextView) findViewById(R.id.artistPanelText);
 
         final MediaPlayer mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -132,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             public void onPrepared(MediaPlayer mp) {
                 Log.v(TAG, "about to start");
                 mediaPlayer.start();
+                titlePanelText.setText(cursor.getString(1));
+
                 prepared = true;
                 playing = true;
             }
@@ -150,8 +157,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
                     final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
                     mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-                    int pic = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
-                    playButton.setImageResource(pic);
+                    //int pic = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
+                   // playButton.setImageResource(pic);
 
                     mediaPlayer.prepareAsync();
 
@@ -167,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             }
         });
 
-
+/*
         if (playButton != null) {
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -265,7 +272,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     }
                 }
             });
-        }
+        } */
+
 
 
         RelativeLayout buttonPanel = (RelativeLayout) findViewById(R.id.buttonPanel);

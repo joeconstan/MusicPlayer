@@ -20,7 +20,7 @@ public class Songscreen extends Activity {
 
         Intent intent = getIntent();
         String songName = intent.getStringExtra("songTitle");
-        
+
 
     }
 }
