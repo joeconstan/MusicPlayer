@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         //final ImageButton fwdButton = (ImageButton) findViewById(R.id.forwButton);
         //final ImageButton backButton = (ImageButton) findViewById(R.id.backwButton);
         final TextView titlePanelText = (TextView) findViewById(R.id.titlePanelText);
-        final TextView artistPanelText = (TextView) findViewById(R.id.artistPanelText);
+        //final TextView artistPanelText = (TextView) findViewById(R.id.artistPanelText);
 
         final MediaPlayer mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
