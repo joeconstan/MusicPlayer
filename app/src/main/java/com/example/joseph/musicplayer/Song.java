@@ -8,7 +8,7 @@ public class Song
 {
     private String title;
     private String artist;
-    private Bitmap albumArt;
+//    private Bitmap albumArt;
     private String track;
     private Uri uri;
     private boolean playing; //better way to do this?
@@ -16,9 +16,8 @@ public class Song
     public Song(){
         playing = false;
     }
-    public Song getSong(){
-        return this;
-    }
+    //public Song getSong(){
+      //  return this; }
 
     public String getTitle() {
         return title;
@@ -32,7 +31,7 @@ public class Song
         return artist;
     }
 
-    public Bitmap getAlbumArt(){return albumArt; }
+    //public Bitmap getAlbumArt(){return albumArt; }
 
     public Uri getUri(){return uri;}
 
@@ -44,7 +43,7 @@ public class Song
     public void setArtist(String artist) {
         this.artist = artist;
     }
-    public void setAlbumArt(Bitmap art){this.albumArt = art; }
+    //public void setAlbumArt(Bitmap art){this.albumArt = art; }
     public void setTitle(String title) {
         this.title = title;
     }

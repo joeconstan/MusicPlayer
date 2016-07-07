@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -75,6 +76,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             }
         }
 
+        //ActionBar ab = getSupportActionBar();
+
+
+
+
+
+
         final ContentResolver resolver = getContentResolver();
         String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE, MediaStore.Audio.Media.DATA};
         final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
@@ -102,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     if (songs[i].getPlaying())
                         titlePanelText.setText(songs[i].getTitle());
                 }
-
 
                 prepared = true;
                 playing = true;
@@ -143,7 +150,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     if (songs[i].getPlaying())
                         intent1.putExtra("songTitle", songs[i].getTitle());
                 }
-                //intent1.putExtra("songTitle", cursor.getString(1)); //needs fixing, shouldnt still be using cursor here
                 startActivity(intent1);
             }
 
@@ -153,7 +159,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         final SeekBar seekBar = (SeekBar)findViewById(R.id.seek_bar);
         seekBar.setMax(mediaPlayer.getDuration());
-        seekBar.setEnabled(false);
 
         MainActivity.this.runOnUiThread(new Runnable() {
 
