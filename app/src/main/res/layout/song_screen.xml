@@ -41,7 +41,7 @@
             android:layout_width="30sp"
             android:layout_height="30sp"
             android:background="@null"
-            android:id="@+id/backwButtonSongSong"
+            android:id="@+id/backwButtonSong"
             android:layout_toLeftOf="@+id/playButtonSong"
             android:layout_marginRight="20sp"
             android:layout_marginTop="20sp"

@@ -1,8 +1,5 @@
 
 
-
-
-
 package com.example.joseph.musicplayer;
 
 import android.Manifest;
@@ -11,8 +8,6 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
@@ -27,18 +22,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.URI;
 
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback{
@@ -52,35 +40,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             for (int j=0;j<21;j++) {
                 songs[j].setTitle(cursor.getString(1));
                 songs[j].setTrack(cursor.getString(2));
+
                 Log.v(TAG, "path: " + songs[j].getTrack());
                 long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
                 Uri mySongUr = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+                songs[j].setUri(mySongUr);
                 metaRetriever.setDataSource(this.getApplicationContext(), mySongUr);
                 String artist = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                 songs[j].setArtist(artist);
-                /*String albumId = MediaStore.Audio.Media.ALBUM_ID;
-                String[] projection = new String[]{MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART};
-
-
-                Cursor curs = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, projection, null, null, null);
-
-                if (curs.moveToFirst()) {
-                    Log.v(TAG, "YES");
-                    String path = curs.getString(curs.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-                    metaRetriever.setDataSource(path);
-                    byte[] arr = metaRetriever.getEmbeddedPicture();
-                    if (!(arr == null)){
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.length);
-                        ByteArrayOutputStream blob = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 0, blob);
-                        songs[j].setAlbumArt(bitmap);
-                    }
-                curs.close();
-                } */
                 cursor.moveToNext();
             }
         }
-
       return true;
     }
 
@@ -106,38 +76,31 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         final ContentResolver resolver = getContentResolver();
         String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE, MediaStore.Audio.Media.DATA};
         final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-        Song songs[] = new Song[21];
+        final Song songs[] = new Song[21];
         for (int i = 0; i < 21; i++)
             songs[i] = new Song();
         queueSongs(cursor, songs);
+        cursor.close();
 
         ListAdapter listAdapter = new songAdapter(this, songs);
         final ListView listView = (ListView) findViewById(R.id.listView);
-
-        //final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
         listView.setAdapter(listAdapter);
-        cursor.moveToFirst();
 
-        //final ImageButton fwdButton = (ImageButton) findViewById(R.id.forwButton);
-        //final ImageButton backButton = (ImageButton) findViewById(R.id.backwButton);
         final TextView titlePanelText = (TextView) findViewById(R.id.titlePanelText);
-        //final TextView artistPanelText = (TextView) findViewById(R.id.artistPanelText);
 
         final MediaPlayer mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-        final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
-        try {
-            mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 Log.v(TAG, "about to start");
                 mediaPlayer.start();
-                titlePanelText.setText(cursor.getString(1));
+
+                for (int i=0;i<21;i++){ //find out which song is playing
+                    if (songs[i].getPlaying())
+                        titlePanelText.setText(songs[i].getTitle());
+                }
+
 
                 prepared = true;
                 playing = true;
@@ -153,127 +116,19 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         mediaPlayer.stop();
                     }
                     mediaPlayer.reset();
-                    cursor.moveToPosition(position);
-                    long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-                    final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
-                    mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-                    //int pic = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
-                   // playButton.setImageResource(pic);
+                    for (int i=0;i<21;i++){
+                        songs[i].setPlaying(false);
+                    }
 
+                    songs[position].setPlaying(true);
+                    Uri urii = songs[position].getUri();
+                    mediaPlayer.setDataSource(getApplicationContext(), urii);
                     mediaPlayer.prepareAsync();
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                /*Intent intent = new Intent(view.getContext(), Songscreen.class);
-                String songName = cursor.getString(1);
-                intent.putExtra("trackTitle", songName);
-                startActivity(intent); */
-
             }
         });
-
-/*
-        if (playButton != null) {
-            playButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        if (playing) {
-                            Log.v(TAG, "about to stop");
-                            mediaPlayer.pause();
-                            playing = false;
-                            int id = getResources().getIdentifier("play_butt_white", "mipmap", getPackageName());
-                            playButton.setImageResource(id);
-                        } else {
-                            int id = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
-                            playButton.setImageResource(id);
-                            if (!prepared) {
-                                mediaPlayer.prepareAsync();
-                            } else {
-                                mediaPlayer.start();
-                            }
-                            playing = true;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-
-
-        //Forward button
-        if (fwdButton != null)
-        {
-            fwdButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v) {
-                    try
-                    {
-                        if (playing)
-                        {
-                            mediaPlayer.stop();
-                        }
-                        mediaPlayer.reset();
-                        cursor.moveToNext();
-                        long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-                        final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
-                        mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-                        int pic = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
-                        playButton.setImageResource(pic);
-
-                        mediaPlayer.prepareAsync();
-
-                    } catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-
-        //back button
-        if (backButton != null)
-        {
-            backButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v) {
-                    try
-                    {
-                        if (playing)
-                        {
-                            mediaPlayer.stop();
-                        }
-                        mediaPlayer.reset();
-
-                        cursor.moveToPrevious();
-
-                        if(cursor.isBeforeFirst())
-                        {
-                            int pic = getResources().getIdentifier("play_butt_white", "mipmap", getPackageName());
-                            playButton.setImageResource(pic);
-                            cursor.moveToNext();
-                        }
-                        long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-                        final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
-                        mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
-                        int pic = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
-                        playButton.setImageResource(pic);
-
-                        mediaPlayer.prepareAsync();
-
-                    } catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        } */
-
 
 
         RelativeLayout buttonPanel = (RelativeLayout) findViewById(R.id.buttonPanel);
@@ -281,7 +136,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             @Override
             public void onClick(View v) {
                 Intent intent1 = new Intent(v.getContext(), Songscreen.class);
-                intent1.putExtra("songTitle", cursor.getString(1)); //needs fixing, shouldnt still be using cursor here
+                for (int i=0;i<21;i++){ //find out which song is playing
+                    if (songs[i].getPlaying())
+                        intent1.putExtra("songTitle", songs[i].getTitle());
+                }
+                //intent1.putExtra("songTitle", cursor.getString(1)); //needs fixing, shouldnt still be using cursor here
                 startActivity(intent1);
             }
 
@@ -295,7 +154,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
             Log.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
-            //resume tasks needing this permission
         }
     }
 

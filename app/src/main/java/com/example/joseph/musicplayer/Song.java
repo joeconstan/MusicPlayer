@@ -2,6 +2,7 @@ package com.example.joseph.musicplayer;
 
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 public class Song
 {
@@ -9,7 +10,12 @@ public class Song
     private String artist;
     private Bitmap albumArt;
     private String track;
+    private Uri uri;
+    private boolean playing; //better way to do this?
 
+    public Song(){
+        playing = false;
+    }
     public Song getSong(){
         return this;
     }
@@ -28,6 +34,13 @@ public class Song
 
     public Bitmap getAlbumArt(){return albumArt; }
 
+    public Uri getUri(){return uri;}
+
+    public boolean getPlaying(){return playing;}
+
+
+    public void setPlaying(boolean playing){this.playing = playing;}
+    public void setUri(Uri uri){this.uri = uri;}
     public void setArtist(String artist) {
         this.artist = artist;
     }
