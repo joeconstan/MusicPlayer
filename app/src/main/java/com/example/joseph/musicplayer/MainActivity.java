@@ -13,6 +13,7 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -25,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 
@@ -131,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         });
 
 
+
         RelativeLayout buttonPanel = (RelativeLayout) findViewById(R.id.buttonPanel);
         buttonPanel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,6 +147,44 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 startActivity(intent1);
             }
 
+        });
+
+        final Handler mHandler = new Handler();
+
+        final SeekBar seekBar = (SeekBar)findViewById(R.id.seek_bar);
+        seekBar.setMax(mediaPlayer.getDuration());
+        seekBar.setEnabled(false);
+
+        MainActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                if (mediaPlayer != null) {
+                    int mCurrentPosition = mediaPlayer.getCurrentPosition() / 1000;
+                    seekBar.setProgress(mCurrentPosition);
+                }
+                mHandler.postDelayed(this, 1000);
+            }
+
+        });
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(mediaPlayer != null && fromUser){
+                    mediaPlayer.seekTo(progress * 1000);
+                }
+            }
         });
 
 
