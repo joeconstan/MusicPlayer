@@ -158,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 for (int i=0;i<21;i++){ //find out which song is playing
                     if (songs[i].getPlaying())
                         intent1.putExtra("songTitle", songs[i].getTitle());
+                        intent1.putExtra("uri", songs[i].getUri().toString());
                 }
                 startActivity(intent1);
             }
