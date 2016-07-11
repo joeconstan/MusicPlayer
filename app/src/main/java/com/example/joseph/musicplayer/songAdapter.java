@@ -23,7 +23,7 @@ public class songAdapter extends ArrayAdapter<Song>{
         TextView titleText = (TextView) customView.findViewById(R.id.titleText);
         TextView artistText = (TextView) customView.findViewById(R.id.artistText);
         ImageView albumArt = (ImageView) customView.findViewById(R.id.albumArt);
-        albumArt.setImageBitmap(song.getAlbumArt());
+        //albumArt.setImageBitmap(song.getAlbumArt());
         titleText.setText(song.getTitle());
         artistText.setText(song.getArtist());
         return customView;
