@@ -9,8 +9,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60sp"
-        android:background="#1E90FF"
-        android:layout_marginTop="509sp"
+        android:background="#4099FF"
+        android:layout_marginTop="557sp"
         >
 
         <ImageButton
@@ -21,7 +21,8 @@
             android:background="@null"
             android:id="@+id/playButtonSong"
             android:layout_marginTop="20sp"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            />
 
         <ImageButton
             android:src="@mipmap/forw_white"
@@ -34,6 +35,7 @@
             android:layout_marginTop="20sp"
 
             android:scaleType="fitCenter"
+
             />
 
         <ImageButton
@@ -48,6 +50,17 @@
             android:scaleType="fitCenter"
 
             />
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/seek_bar"
+            android:max="100"
+            android:layout_below="@+id/playButtonSong"
+
+            />
+
+
 
 
 

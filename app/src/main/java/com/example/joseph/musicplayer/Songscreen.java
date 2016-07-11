@@ -9,12 +9,14 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 
@@ -167,6 +169,43 @@ public class Songscreen extends Activity {
                 }
             });
         }
+
+        final Handler mHandler = new Handler();
+
+        final SeekBar seekBar = (SeekBar)findViewById(R.id.seek_bar);
+        seekBar.setMax(mediaPlayer.getDuration());
+
+        Songscreen.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                if (mediaPlayer != null) {
+                    int mCurrentPosition = mediaPlayer.getCurrentPosition() / 1000;
+                    seekBar.setProgress(mCurrentPosition);
+                }
+                mHandler.postDelayed(this, 1000);
+            }
+
+        });
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(mediaPlayer != null && fromUser){
+                    mediaPlayer.seekTo(progress * 1000);
+                }
+            }
+        });
 
 
 

@@ -39,21 +39,30 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     boolean prepared = false;
 
     public boolean queueSongs(Cursor cursor, Song songs[]){
+
+        //int j = 0;
+        int counter = 0;
         if (cursor.moveToFirst()) {
             for (int j=0;j<21;j++) {
-                songs[j].setTitle(cursor.getString(1));
-                songs[j].setTrack(cursor.getString(2));
 
-                Log.v(TAG, "path: " + songs[j].getTrack());
-                long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-                Uri mySongUr = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
-                songs[j].setUri(mySongUr);
-                metaRetriever.setDataSource(this.getApplicationContext(), mySongUr);
-                String artist = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-                songs[j].setArtist(artist);
-                cursor.moveToNext();
+            //    while(!cursor.isAfterLast())
+              //  {
+                    songs[j].setTitle(cursor.getString(1));
+                    songs[j].setTrack(cursor.getString(2));
+
+                    Log.v(TAG, "path: " + songs[j].getTrack());
+                    long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+                    Uri mySongUr = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+                    songs[j].setUri(mySongUr);
+                    metaRetriever.setDataSource(this.getApplicationContext(), mySongUr);
+                    String artist = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                    songs[j].setArtist(artist);
+                    //   j++;
+                    cursor.moveToNext();
+
+                }
             }
-        }
+
       return true;
     }
 
@@ -149,50 +158,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 for (int i=0;i<21;i++){ //find out which song is playing
                     if (songs[i].getPlaying())
                         intent1.putExtra("songTitle", songs[i].getTitle());
-                        intent1.putExtra("uri", songs[i].getUri().toString());
                 }
                 startActivity(intent1);
             }
 
         });
-
-        final Handler mHandler = new Handler();
-
-        final SeekBar seekBar = (SeekBar)findViewById(R.id.seek_bar);
-        //seekBar.setMax(mediaPlayer.getDuration());
-
-        MainActivity.this.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                if (mediaPlayer != null) {
-                    int mCurrentPosition = mediaPlayer.getCurrentPosition() / 1000;
-                    seekBar.setProgress(mCurrentPosition);
-                }
-                mHandler.postDelayed(this, 1000);
-            }
-
-        });
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(mediaPlayer != null && fromUser){
-                    mediaPlayer.seekTo(progress * 1000);
-                }
-            }
-        });
-
 
     }
 
