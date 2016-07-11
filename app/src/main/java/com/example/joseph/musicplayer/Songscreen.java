@@ -38,19 +38,19 @@ public class Songscreen extends Activity {
 
         Intent intent = getIntent();
         String songName = intent.getStringExtra("songTitle");
-
+        Uri uri = Uri.parse(intent.getStringExtra("uri"));
         final ImageButton playButton = (ImageButton) findViewById(R.id.playButtonSong);
         final ImageButton fwdButton = (ImageButton) findViewById(R.id.forwButtonSong);
         final ImageButton backButton = (ImageButton) findViewById(R.id.backwButtonSong);
 
-/*        final ContentResolver resolver = getContentResolver();
+        final ContentResolver resolver = getContentResolver();
         String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE, MediaStore.Audio.Media.DATA};
         final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
 
         final MediaPlayer mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-        final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+        //long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+        final Uri mySongUri = uri;
         try {
             mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
         } catch (Exception e) {
@@ -65,7 +65,7 @@ public class Songscreen extends Activity {
                 playing = true;
             }
         });
-*/
+
 
 
 
@@ -76,7 +76,7 @@ public class Songscreen extends Activity {
                     try {
                         if (playing) {
                             Log.v(TAG, "about to stop");
-  //                          mediaPlayer.pause();
+                            mediaPlayer.pause();
                             playing = false;
                             int id = getResources().getIdentifier("play_butt_white", "mipmap", getPackageName());
                             playButton.setImageResource(id);
@@ -84,9 +84,9 @@ public class Songscreen extends Activity {
                             int id = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
                             playButton.setImageResource(id);
                             if (!prepared) {
-    //                            mediaPlayer.prepareAsync();
+                                mediaPlayer.prepareAsync();
                             } else {
-      //                          mediaPlayer.start();
+                                mediaPlayer.start();
                             }
                             playing = true;
                         }
@@ -109,17 +109,17 @@ public class Songscreen extends Activity {
                     {
                         if (playing)
                         {
-        //                    mediaPlayer.stop();
+                            mediaPlayer.stop();
                         }
-          //              mediaPlayer.reset();
-            //            cursor.moveToNext();
-                //        long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
-              //          final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
-                  //      mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+                        mediaPlayer.reset();
+                        cursor.moveToNext();
+                        long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
+                        final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
+                        mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
                         int pic = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
                         playButton.setImageResource(pic);
 
-//                        mediaPlayer.prepareAsync();
+                        mediaPlayer.prepareAsync();
 
                     } catch (Exception e)
                     {
@@ -140,13 +140,13 @@ public class Songscreen extends Activity {
                     {
                         if (playing)
                         {
-//                            mediaPlayer.stop();
+                            mediaPlayer.stop();
                         }
-  //                      mediaPlayer.reset();
+                        mediaPlayer.reset();
 
-    //                    cursor.moveToPrevious();
+                        cursor.moveToPrevious();
 
-      /*                  if(cursor.isBeforeFirst())
+                        if(cursor.isBeforeFirst())
                         {
                             int pic = getResources().getIdentifier("play_butt_white", "mipmap", getPackageName());
                             playButton.setImageResource(pic);
@@ -154,11 +154,11 @@ public class Songscreen extends Activity {
                         }
                         long mySongId = cursor.getLong(cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID));
                         final Uri mySongUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mySongId);
-        */  //              mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
+                        mediaPlayer.setDataSource(getApplicationContext(), mySongUri);
                         int pic = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
                         playButton.setImageResource(pic);
 
-          //              mediaPlayer.prepareAsync();
+                        mediaPlayer.prepareAsync();
 
                     } catch (Exception e)
                     {
@@ -167,11 +167,6 @@ public class Songscreen extends Activity {
                 }
             });
         }
-
-
-
-
-
 
 
 

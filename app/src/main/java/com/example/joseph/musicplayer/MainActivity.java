@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 for (int i=0;i<21;i++){ //find out which song is playing
                     if (songs[i].getPlaying())
                         intent1.putExtra("songTitle", songs[i].getTitle());
+                        intent1.putExtra("uri", songs[i].getUri().toString());
                 }
                 startActivity(intent1);
             }
@@ -158,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         final Handler mHandler = new Handler();
 
         final SeekBar seekBar = (SeekBar)findViewById(R.id.seek_bar);
-        seekBar.setMax(mediaPlayer.getDuration());
+        //seekBar.setMax(mediaPlayer.getDuration());
 
         MainActivity.this.runOnUiThread(new Runnable() {
 
