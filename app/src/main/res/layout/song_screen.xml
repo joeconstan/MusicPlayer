@@ -22,6 +22,7 @@
             android:id="@+id/playButtonSong"
             android:layout_marginTop="20sp"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8sp"
             />
 
         <ImageButton
@@ -35,7 +36,7 @@
             android:layout_marginTop="20sp"
 
             android:scaleType="fitCenter"
-
+            android:layout_marginBottom="8sp"
             />
 
         <ImageButton
@@ -48,17 +49,17 @@
             android:layout_marginRight="20sp"
             android:layout_marginTop="20sp"
             android:scaleType="fitCenter"
-
+            android:layout_marginBottom="8sp"
             />
 
-        <SeekBar
+        <!--<SeekBar
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/seek_bar"
             android:max="100"
             android:layout_below="@+id/playButtonSong"
 
-            />
+            /> -->
 
 
 

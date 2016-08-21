@@ -172,7 +172,7 @@ public class Songscreen extends Activity {
 
         final Handler mHandler = new Handler();
 
-        final SeekBar seekBar = (SeekBar)findViewById(R.id.seek_bar);
+        /*final SeekBar seekBar = (SeekBar)findViewById(R.id.seek_bar);
         seekBar.setMax(mediaPlayer.getDuration());
 
         Songscreen.this.runOnUiThread(new Runnable() {
@@ -205,7 +205,7 @@ public class Songscreen extends Activity {
                     mediaPlayer.seekTo(progress * 1000);
                 }
             }
-        });
+        }); */
 
 
 

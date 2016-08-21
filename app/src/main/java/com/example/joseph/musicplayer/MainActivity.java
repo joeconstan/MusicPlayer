@@ -3,19 +3,19 @@
 package com.example.joseph.musicplayer;
 
 import android.Manifest;
+import android.app.Service;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
-//change
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.IBinder;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -81,9 +82,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
 
 
-
-
-
         final ContentResolver resolver = getContentResolver();
         String[] projection = new String[]{BaseColumns._ID, MediaStore.MediaColumns.TITLE, MediaStore.Audio.Media.DATA};
         final Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
@@ -99,23 +97,36 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         final TextView titlePanelText = (TextView) findViewById(R.id.titlePanelText);
 
-        final MediaPlayer mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+
+
+
+        final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
+        playButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPrepared(MediaPlayer mp) {
-                Log.v(TAG, "about to start");
-                mediaPlayer.start();
+            public void onClick(View v) {
+                try {
+                    if (playing) {
+                        Log.v(TAG, "about to stop");
 
-                for (int i=0;i<21;i++){ //find out which song is playing
-                    if (songs[i].getPlaying())
-                        titlePanelText.setText(songs[i].getTitle());
+                        playing = false;
+
+                    } else {
+                        int id = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
+                        playButton.setImageResource(id);
+                        Intent i = new Intent(MainActivity.this, MusicService.class);
+                        MainActivity.this.startService(i);
+                        playing = true;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-                prepared = true;
-                playing = true;
             }
         });
+
+
+// int id = getResources().getIdentifier("play_butt_white", "mipmap", getPackageName());
+        //playButton.setImageResource(id);
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -123,17 +134,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     if (playing) {
-                        mediaPlayer.stop();
+                       //stop
                     }
-                    mediaPlayer.reset();
+
                     for (int i=0;i<21;i++){
                         songs[i].setPlaying(false);
                     }
-
+                    int isf = getResources().getIdentifier("pause_butt_white", "mipmap", getPackageName());
+                    playButton.setImageResource(isf);
                     songs[position].setPlaying(true);
                     Uri urii = songs[position].getUri();
-                    mediaPlayer.setDataSource(getApplicationContext(), urii);
-                    mediaPlayer.prepareAsync();
+                   //change data source
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
