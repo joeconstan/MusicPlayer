@@ -1,7 +1,3 @@
 # MusicPlayer
 
-contentproviders
-contentresolvers
-uris
-mediaPlayer
-
+An Android app to replace the default music player, as it is buggy
